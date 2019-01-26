@@ -6,11 +6,8 @@
             color="#388E3C"
             dark
             pt-1
-        >
-
-            
+        >            
             <v-card-title>
-                
                     <v-img
                         :src="require(`../assets/${name.toLowerCase()}.svg`)"
                         height="150"
@@ -19,9 +16,7 @@
                 
             </v-card-title>
 
-            <v-spacer></v-spacer>
-
-            <v-card-text class="headline font-weight-bold">
+            <v-card-text class="headline font-weight-bold ingredient__text">
                 <v-layout column>
                 <span class="title font-weight-light">{{ name }}</span>
                 {{ value | addUnits(units) }}
@@ -56,6 +51,12 @@ export default {
 }
 </script>
 
-<style>
-
+<style scoped>
+svg {
+    fill: #ffffff;
+    stroke: #fff;
+}
+.ingredient__text {
+    padding-top: 0px;
+}
 </style>

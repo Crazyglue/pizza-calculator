@@ -5,6 +5,8 @@
       wrap
     >
       <v-flex xs12>
+        <span class="headline">CHEAT</span>
+        <span class="headline font-weight-light">ZA</span>
         <v-img
           :src="require('../assets/logo.svg')"
           class="my-3"
@@ -14,7 +16,7 @@
       </v-flex>
 
       <v-flex mb-4 xs12 sm8 offset-sm2>
-        <v-flex sm8 offset-sm2>
+        <v-layout sm8 offset-sm2 align-center column justify-center>
 
           <FormControl 
             @click="(v) => ballSize += v"
@@ -26,11 +28,10 @@
             {{ ballSize }}
           </FormControl>
 
-          <v-divider></v-divider>
-
           <FormControl 
             @click="(v) => numBalls += v"
             :incrementAmount="1"
+            :min-disabled="numBalls === 1"
           >
             <template slot="title">
               Number of balls
@@ -38,19 +39,19 @@
             {{ numBalls }}
           </FormControl>
 
-          <v-divider></v-divider>
-
           <FormControl 
             @click="(v) => hydration += v"
             :incrementAmount=".05"
+            :min-disabled="hydration <= 0.50"
+            :max-disabled="hydration >= 1"
           >
             <template slot="title">
               Hydration (%)
             </template>
-            {{ hydration | twoDecimal }}
+            {{ hydration | toPercent }}%
           </FormControl>
-        </v-flex>
-        </v-flex>
+        </v-layout>
+      </v-flex>
 
       <v-flex mb-4 xs12 sm8 offset-sm2 class="results" pa-2>
         <v-layout wrap>
@@ -114,8 +115,8 @@
       }
     },
     filters: {
-      twoDecimal(v) {
-        return v.toPrecision(2)
+      toPercent(v) {
+        return Math.round(v * 100);
       },
       round(v) {
         return Math.round(v);
