@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
-import 'material-design-icons-iconfont';
+import '@mdi/font/css/materialdesignicons.css';
 
 Vue.use(Vuetify, {
-  iconfont: 'md',
+  iconfont: 'mdi',
 })

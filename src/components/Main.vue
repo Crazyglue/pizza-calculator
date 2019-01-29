@@ -23,9 +23,13 @@
             :incrementAmount="5"
           >
             <template slot="title">
-              Ball size (g)
+              Pizza size (g)
             </template>
-            {{ ballSize }}
+            <v-layout slot="tooltip" column>
+              <span>a 10-12" pizza is 250g</span>
+              <span>and a 14-16" pizza is 300g</span>
+            </v-layout>
+            <span>{{ ballSize }}</span>
           </FormControl>
 
           <FormControl 
@@ -34,8 +38,9 @@
             :min-disabled="numBalls === 1"
           >
             <template slot="title">
-              Number of balls
+              Pizzas
             </template>
+            
             {{ numBalls }}
           </FormControl>
 
@@ -47,6 +52,9 @@
           >
             <template slot="title">
               Hydration (%)
+            </template>
+            <template slot="tooltip">
+              Hydration is the amount of water to add as a percentage of how much flour (measured by its weight)
             </template>
             {{ hydration | toPercent }}%
           </FormControl>

@@ -3,7 +3,20 @@
         <v-layout column pb-2 pt-2>
             
             <v-flex xs12>
-                <span class="subheading"><slot name="title" /></span>
+                <v-layout class="subheading" align-center justify-center>
+                    <slot name="title" />
+                    <v-tooltip bottom v-if="$slots.tooltip" class="tooltip__wrapper">
+                        <v-icon
+                            small
+                            slot="activator"
+                            color="secondary"
+                            dark
+                        >
+                            mdi-help-circle
+                        </v-icon>
+                        <slot name="tooltip" />
+                    </v-tooltip>
+                </v-layout>
             </v-flex>
 
             <v-flex xs12>
@@ -16,7 +29,7 @@
                         color="light-green"
                         :disabled="minDisabled"
                     >
-                        <v-icon dark>remove</v-icon>
+                        <v-icon dark>mdi-minus</v-icon>
                     </v-btn>
                     <span class="display-1">
                         <slot />
@@ -29,7 +42,7 @@
                         color="light-green"
                         :disabled="maxDisabled"
                     >
-                        <v-icon dark>add</v-icon>
+                        <v-icon dark>mdi-plus</v-icon>
                     </v-btn>
                 </v-layout>
             </v-flex>
@@ -64,5 +77,9 @@ export default {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+}
+
+.tooltip__wrapper {
+    margin-left: 0.25em;
 }
 </style>
