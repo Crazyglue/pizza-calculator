@@ -61,11 +61,11 @@ export default {
         },
         minDisabled: {
             type: Boolean,
-            required: true
+            required: false
         },
         maxDisabled: {
             type: Boolean,
-            required: true
+            required: false
         }
     }
 }
