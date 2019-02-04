@@ -1,6 +1,6 @@
 <template>
     <v-container fluid pt-0 pb-0>
-        <v-layout column pb-2 pt-2>
+        <v-layout column  pt-2>
             
             <v-flex xs12>
                 <v-layout class="subheading" align-center justify-center>
@@ -23,7 +23,7 @@
                 <v-layout align-center justify-space-between row fill-height>
                     <v-btn 
                         fab 
-                        large 
+                        small 
                         @click="$emit('click', (-1 * incrementAmount))" 
                         dark 
                         color="light-green"
@@ -36,7 +36,7 @@
                     </span>
                     <v-btn 
                         fab 
-                        large 
+                        small 
                         @click="$emit('click', incrementAmount)" 
                         dark 
                         color="light-green"

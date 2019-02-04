@@ -7,12 +7,13 @@
       <v-flex xs12>
         <span class="headline">CHEAT</span>
         <span class="headline font-weight-light">ZA</span>
-        <v-img
+        <!-- <v-img
           :src="require('../assets/logo.svg')"
           class="my-3"
           contain
           height="150"
-        ></v-img>
+        ></v-img> -->
+        <hr />
       </v-flex>
 
       <v-flex mb-4 xs12 sm8 offset-sm2>
@@ -61,7 +62,7 @@
         </v-layout>
       </v-flex>
 
-      <v-flex mb-4 xs12 sm8 offset-sm2 class="results" pa-2>
+      <v-flex mb-4 xs12 sm8 offset-sm2 class="results" pl-2 pr-2>
         <v-layout wrap>
           <Ingredient
             :name="'Flour'"
@@ -71,7 +72,7 @@
           <Ingredient
             :name="'Water'"
             :value="water | round"
-            :units="'g/ml'"
+            :units="'g'"
           />
           <Ingredient
             :name="'Yeast'"
@@ -134,5 +135,9 @@
 </script>
 
 <style scoped>
-
+hr {
+  border-bottom: none;
+  border-right: none;
+  border-left: none;
+}
 </style>
