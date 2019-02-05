@@ -21,7 +21,7 @@
 
             <v-card-text class="headline font-weight-bold ingredient__text">
                 
-                    <span>{{ value }}</span>
+                    <span>{{ value | round }}</span>
                     <span class="font-weight-light">{{ units }}</span>
             </v-card-text>
         </v-card>
@@ -48,7 +48,10 @@ export default {
     filters: {
         addUnits(v, units) {
             return `${v} (${units})`
-        }
+        },
+      round(v) {
+        return Math.round(v);
+      }
     }
 }
 </script>

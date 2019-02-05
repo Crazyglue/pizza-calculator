@@ -21,81 +21,27 @@
       <v-flex mb-4 xs12 sm8 offset-sm2>
         <v-layout sm8 offset-sm2 align-center column justify-center transition="slide-x-transition">
             <FormControl
-              :key="'size'" 
-              @click="(v) => ballSize += v"
-              :incrementAmount="5"
+              v-for="control in filteredInputs"
+              :key="control.key"
+              @click="(v) => inputData[control.key] += v"
+              :incrementAmount="control.incrementAmount"
+              :min-disabled="inputData[control.key] <= control.minVal"
+              :max-disabled="inputData[control.key] >= control.maxVal"
             >
-              <template slot="title">
-                Pizza size
-              </template>
-              <v-layout slot="tooltip" column>
-                <span>a 10-12" pizza is 250g</span>
-                <span>and a 14-16" pizza is 300g</span>
-              </v-layout>
-              <span>{{ ballSize }}<span class="font-weight-light">g</span></span>
-            </FormControl>
 
-            <FormControl 
-              :key="'number-pizzas'"
-              @click="(v) => numBalls += v"
-              :incrementAmount="1"
-              :min-disabled="numBalls === 1"
-            >
               <template slot="title">
-                Pizzas
+                {{ control.name }}
               </template>
-              
-              {{ numBalls }}
-            </FormControl>
 
-            <FormControl 
-              :key="'hydration'"
-              @click="(v) => hydration += v"
-              :incrementAmount=".05"
-              :min-disabled="hydration <= 0.50"
-              :max-disabled="hydration >= 1"
-            >
-              <template slot="title">
-                Hydration
+              <template slot="tooltip" v-if="control.tooltip">
+                <span>{{ control.tooltip }}</span>
               </template>
-              <template slot="tooltip">
-                The amount of water to add as a percentage of how much flour (measured by its weight). The lower temperature the oven, the higher the hydration should be. 70% being the upper end
-              </template>
-              {{ hydration | toPercent }}<span class="font-weight-light">%</span>
-            </FormControl>
 
-            <FormControl 
-              v-if="isAdvanced"
-              :key="'yeast'"
-              @click="(v) => yeastPercent += v"
-              :incrementAmount=".01"
-              :min-disabled="yeastPercent <= 0.0"
-              :max-disabled="yeastPercent > 0.09"
-            >
-              <template slot="title">
-                Yeast
-              </template>
-              <template slot="tooltip">
-                The amount of yeast to add, as a percentage of flour. Typically 1% is enough
-              </template>
-              {{ yeastPercent | toPercent }}<span class="font-weight-light">%</span>
-            </FormControl>
+              {{ inputData[control.key] | toPercent(control.units) }}
+              <span v-if="control.units" class="font-weight-light">
+                {{ control.units }}
+              </span>
 
-            <FormControl 
-              v-if="isAdvanced"
-              :key="'salt'"
-              @click="(v) => saltPercent += v"
-              :incrementAmount=".01"
-              :min-disabled="saltPercent <= 0.0"
-              :max-disabled="saltPercent >= 0.1"
-            >
-              <template slot="title">
-                Salt
-              </template>
-              <template slot="tooltip">
-                The amount of salt to add, as a percentage of flour. Default 2%
-              </template>
-              {{ saltPercent | toPercent }}<span class="font-weight-light">%</span>
             </FormControl>
         </v-layout>
       </v-flex>
@@ -104,22 +50,22 @@
         <v-layout wrap>
           <Ingredient
             :name="'Flour'"
-            :value="flour | round"
+            :value="flour"
             :units="'g'"
           />
           <Ingredient
             :name="'Water'"
-            :value="water | round"
+            :value="water"
             :units="'g'"
           />
           <Ingredient
             :name="'Yeast'"
-            :value="yeast | round"
+            :value="yeast"
             :units="'g'"
           />
           <Ingredient
             :name="'Salt'"
-            :value="salt | round"
+            :value="salt"
             :units="'g'"
           />
         </v-layout>
@@ -131,6 +77,15 @@
 <script>
   import Ingredient from './Ingredient.vue';
   import FormControl from './FormControl.vue';
+
+  const inputs = [
+    { name: 'Pizza size', tooltip: 'A 10-12" pizza is 250g and a 14-16" pizza is 300g', units: 'g', incrementAmount: 5, isAdvanced: false, key: 'ballSize' },
+    { name: 'Pizzas', tooltip: null, minVal: 1, incrementAmount: 1, isAdvanced: false, key: 'numBalls' },
+    { name: 'Hydration', tooltip: 'The amount of water to add as a percentage of how much flour (measured by its weight). The lower temperature the oven, the higher the hydration should be. 70% being the upper end', minVal: 0.50, maxVal: 1, units: '%', incrementAmount: 0.05, isAdvanced: false, key: 'hydration' },
+    { name: 'Yeast', tooltip: 'The amount of yeast to add, as a percentage of flour. Typically 1% is enough', minVal: 0.01, maxVal: 0.09, units: '%', incrementAmount: 0.01, isAdvanced: true, key: 'yeastPercent' },
+    { name: 'Salt', tooltip: 'The amount of salt to add, as a percentage of flour. Default 2%', minVal: 0.01, maxVal: 0.1, units: '%', incrementAmount: 0.01, isAdvanced: true, key: 'saltPercent' }
+  ]
+
   export default {
     components: {
       Ingredient,
@@ -139,37 +94,46 @@
     name: 'Main',
     data() {
       return {
-        ballSize: 250,
-        numBalls: 2,
-        hydration: 0.65,
-        yeastPercent: 0.01,
-        saltPercent: 0.02,
-        isAdvanced: false
+        isAdvanced: false,
+        inputs,
+        inputData: {
+          ballSize: 250,
+          numBalls: 2,
+          hydration: 0.65,
+          yeastPercent: 0.01,
+          saltPercent: 0.02
+        }
       }
     },
     computed: {
+      filteredInputs() {
+        // TODO: Simplify this?
+        return this.inputs.filter(i => {
+          if (this.isAdvanced) return true;
+          else if (!this.isAdvanced && !i.isAdvanced) return true;
+          else return false;
+        })
+      },
       totalWeight() {
-        return this.ballSize * this.numBalls;
+        return this.inputData.ballSize * this.inputData.numBalls;
       },
       flour() {
-        return (this.totalWeight) / (1 + this.hydration);
+        return (this.totalWeight) / (1 + this.inputData.hydration);
       },
       water() {
         return this.totalWeight - this.flour;
       },
       yeast() {
-        return this.flour * this.yeastPercent;
+        return this.flour * this.inputData.yeastPercent;
       },
       salt() {
-        return this.flour * this.saltPercent;
+        return this.flour * this.inputData.saltPercent;
       }
     },
     filters: {
-      toPercent(v) {
+      toPercent(v, units) {
+        if (units !== '%') return v;
         return Math.round(v * 100);
-      },
-      round(v) {
-        return Math.round(v);
       }
     }
   }
