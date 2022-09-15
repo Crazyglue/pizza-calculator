@@ -1,21 +1,37 @@
-FROM node:8
+# FROM node:12
 
-RUN npm install -g http-server
+# WORKDIR /app
 
-# make the 'app' folder the current working directory
-WORKDIR /app
+# COPY . .
 
-# copy both 'package.json' and 'package-lock.json' (if available)
+# RUN npm install
+
+# CMD [ "npm", "run", "serve" ]
+
+# stage1 as builder
+FROM node:12 as builder
+
+WORKDIR /vue-ui
+
+# Copy the package.json and install dependencies
 COPY package*.json ./
-
-# install project dependencies
 RUN npm install
 
-# copy project files and folders to the current working directory (i.e. 'app' folder)
+# Copy rest of the files
 COPY . .
 
-# build app for production with minification
+# Build the project
 RUN npm run build
 
-EXPOSE 8080
-CMD [ "http-server", "dist" ]
+
+FROM nginx as production-build
+COPY ./nginx.conf /etc/nginx/nginx.conf
+
+## Remove default nginx index page
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy from the stahg 1
+COPY --from=builder /vue-ui/dist /usr/share/nginx/html
+
+EXPOSE 80
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
